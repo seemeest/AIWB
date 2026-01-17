@@ -7,6 +7,10 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
 
 security:
   jwt:
@@ -15,3 +19,7 @@ security:
     refresh-token-ttl-days: 30
   auth:
     verification-token-ttl-hours: 24
+
+storage:
+  images:
+    root: storage/images

@@ -2,12 +2,16 @@ package com.aiwb.marketplace.infrastructure.config;
 
 import com.aiwb.marketplace.application.auth.AuthService;
 import com.aiwb.marketplace.application.ports.EmailVerificationTokenRepository;
+import com.aiwb.marketplace.application.ports.ImageStorage;
 import com.aiwb.marketplace.application.ports.PasswordHasher;
 import com.aiwb.marketplace.application.ports.RefreshTokenRepository;
 import com.aiwb.marketplace.application.ports.TokenService;
 import com.aiwb.marketplace.application.ports.UserRepository;
+import com.aiwb.marketplace.application.ports.ProductRepository;
+import com.aiwb.marketplace.application.product.ProductService;
 import com.aiwb.marketplace.infrastructure.security.BCryptPasswordHasher;
 import com.aiwb.marketplace.infrastructure.security.JwtTokenService;
+import com.aiwb.marketplace.infrastructure.storage.LocalImageStorage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Clock;
 
 @Configuration
-@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class, StorageProperties.class})
 public class ApplicationConfig {
 
     @Bean
@@ -31,6 +35,11 @@ public class ApplicationConfig {
     @Bean
     public TokenService tokenService(JwtProperties jwtProperties, Clock clock) {
         return new JwtTokenService(jwtProperties, clock);
+    }
+
+    @Bean
+    public ImageStorage imageStorage(StorageProperties storageProperties) {
+        return new LocalImageStorage(storageProperties.rootPath());
     }
 
     @Bean
@@ -50,5 +59,12 @@ public class ApplicationConfig {
                 clock,
                 authProperties.verificationTokenTtl()
         );
+    }
+
+    @Bean
+    public ProductService productService(ProductRepository productRepository,
+                                         ImageStorage imageStorage,
+                                         Clock clock) {
+        return new ProductService(productRepository, imageStorage, clock);
     }
 }
