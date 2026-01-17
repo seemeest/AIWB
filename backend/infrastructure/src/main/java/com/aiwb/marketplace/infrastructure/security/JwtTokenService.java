@@ -14,7 +14,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class JwtTokenService implements TokenService {
     private final JwtProperties properties;
     private final Clock clock;
-    private final Key key;
+    private final SecretKey key;
 
     public JwtTokenService(JwtProperties properties, Clock clock) {
         this.properties = properties;
