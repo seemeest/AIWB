@@ -29,6 +29,14 @@
 - Обработка жалоб на товары.
 - Модерация первого товара продавца.
 
+## Процесс публикации и модерации
+- Новый товар создается как черновик и не виден покупателям до публикации.
+- Первый товар продавца попадает в модерацию перед публикацией.
+- Последующие товары продавца публикуются сразу после перевода из черновика.
+- Жалобу на товар может отправить любой пользователь.
+- Модератор может блокировать товар, продавца или покупателя, фиксируя причину.
+- Жалобы и решения модерации сохраняются с историей статусов.
+
 ## Поиск и каталог
 - Полнотекстовый поиск с опечатками (пример: "кросовки" → "кроссовки", "айфон" → "iphone").
 - Автодополнение: популярные запросы, категории, бренды.
@@ -65,6 +73,26 @@
 - Update 2026-01-17: Оркестрация окружения: Docker Compose.
 - Update 2026-01-17: Доставка с обязательными статусами.
 - Мониторинг и логирование: определить стек.
+
+## Модель данных (черновик)
+- users: учетные записи (email, password_hash, status, created_at).
+- roles/user_roles: базовые роли (buyer/seller/moderator) и назначения.
+- seller_profiles: реквизиты продавца, статус, флаги модерации.
+- products: базовый товар (seller_id, title, description, category_id, brand_id, status, is_first_product).
+- product_variants: варианты (sku, color, size, price, quantity, status).
+- product_images: изображения (product_id/variant_id, sort_order, path).
+- categories/brands: иерархия и справочники.
+- attributes/attribute_values/product_attributes: характеристики (в т.ч. для техники).
+- discounts: временные скидки (product_id/variant_id, percent, start_at, end_at).
+- orders/order_items: заказы и позиции (цены на момент покупки).
+- payments: платежи (provider, external_id, status, amount).
+- shipments/shipment_status_history: отгрузки и история статусов доставки.
+- reviews/comments: отзывы и комментарии (link к order_item для валидации покупки).
+- complaints: жалобы на товары (author_id, product_id, reason, status).
+- moderation_actions: решения модерации (target_type, target_id, action, reason, created_at).
+- blocks: блокировки (target_type, target_id, reason, until_at).
+- product_views/search_metrics: просмотры, позиции в поиске, конверсия (по времени).
+- notifications: email/web события и статус доставки.
 
 ## Риски
 - 1 секунда отклика при полном тексте и автодополнении потребует продуманной архитектуры поиска и кеширования.
