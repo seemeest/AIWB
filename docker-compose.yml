@@ -21,6 +21,16 @@ services:
       - kafka
       - otel-collector
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: marketplace-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
   postgres:
     image: postgres:16
     container_name: marketplace-postgres
