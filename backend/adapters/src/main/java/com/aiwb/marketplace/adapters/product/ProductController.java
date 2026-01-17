@@ -1,5 +1,6 @@
 package com.aiwb.marketplace.adapters.product;
 
+import com.aiwb.marketplace.application.metrics.MetricsService;
 import com.aiwb.marketplace.application.product.AddImageCommand;
 import com.aiwb.marketplace.application.product.CreateProductCommand;
 import com.aiwb.marketplace.application.product.ProductService;
@@ -8,6 +9,7 @@ import com.aiwb.marketplace.domain.product.ProductImage;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +27,11 @@ import java.util.UUID;
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductService productService;
+    private final MetricsService metricsService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, MetricsService metricsService) {
         this.productService = productService;
+        this.metricsService = metricsService;
     }
 
     @PostMapping
@@ -52,6 +56,15 @@ public class ProductController {
                 file.getOriginalFilename(),
                 file.getInputStream()
         ));
+        return ResponseEntity.ok(toResponse(product));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> get(@PathVariable("id") UUID productId,
+                                               @RequestParam(value = "viewerId", required = false) UUID viewerId,
+                                               @RequestParam(value = "sessionId", required = false) String sessionId) {
+        Product product = productService.getById(productId);
+        metricsService.recordProductView(product.getId(), product.getSellerId(), viewerId, sessionId);
         return ResponseEntity.ok(toResponse(product));
     }
 

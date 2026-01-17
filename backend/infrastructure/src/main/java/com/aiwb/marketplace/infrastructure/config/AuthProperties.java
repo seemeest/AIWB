@@ -7,6 +7,7 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "security.auth")
 public class AuthProperties {
     private long verificationTokenTtlHours = 24;
+    private long passwordResetTokenTtlHours = 2;
 
     public long getVerificationTokenTtlHours() {
         return verificationTokenTtlHours;
@@ -18,5 +19,17 @@ public class AuthProperties {
 
     public Duration verificationTokenTtl() {
         return Duration.ofHours(verificationTokenTtlHours);
+    }
+
+    public long getPasswordResetTokenTtlHours() {
+        return passwordResetTokenTtlHours;
+    }
+
+    public void setPasswordResetTokenTtlHours(long passwordResetTokenTtlHours) {
+        this.passwordResetTokenTtlHours = passwordResetTokenTtlHours;
+    }
+
+    public Duration passwordResetTokenTtl() {
+        return Duration.ofHours(passwordResetTokenTtlHours);
     }
 }

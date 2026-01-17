@@ -9,26 +9,13 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "refresh_tokens")
-public class RefreshTokenEntity {
+@Table(name = "login_audit")
+public class LoginAuditEntity {
     @Id
-    @Column(nullable = false, length = 512)
-    private String token;
-
-    @Column(nullable = false)
     private UUID userId;
 
     @Column(nullable = false)
-    private Instant expiresAt;
-
-    @Column(nullable = false)
-    private Instant createdAt;
-
-    @Column(nullable = false)
-    private boolean revoked;
-
-    @Column(nullable = false)
-    private int tokenVersion;
+    private Instant lastLoginAt;
 
     @Column(length = 512)
     private String userAgent;
@@ -42,13 +29,14 @@ public class RefreshTokenEntity {
     @Column(length = 128)
     private String browser;
 
-    public String getToken() {
-        return token;
-    }
+    @Column(length = 64)
+    private String country;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+    @Column(length = 128)
+    private String region;
+
+    @Column(length = 128)
+    private String city;
 
     public UUID getUserId() {
         return userId;
@@ -58,36 +46,12 @@ public class RefreshTokenEntity {
         this.userId = userId;
     }
 
-    public Instant getExpiresAt() {
-        return expiresAt;
+    public Instant getLastLoginAt() {
+        return lastLoginAt;
     }
 
-    public void setExpiresAt(Instant expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public boolean isRevoked() {
-        return revoked;
-    }
-
-    public void setRevoked(boolean revoked) {
-        this.revoked = revoked;
-    }
-
-    public int getTokenVersion() {
-        return tokenVersion;
-    }
-
-    public void setTokenVersion(int tokenVersion) {
-        this.tokenVersion = tokenVersion;
+    public void setLastLoginAt(Instant lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 
     public String getUserAgent() {
@@ -120,5 +84,29 @@ public class RefreshTokenEntity {
 
     public void setBrowser(String browser) {
         this.browser = browser;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

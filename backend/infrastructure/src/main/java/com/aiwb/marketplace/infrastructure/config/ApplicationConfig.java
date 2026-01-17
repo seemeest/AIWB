@@ -3,7 +3,9 @@ package com.aiwb.marketplace.infrastructure.config;
 import com.aiwb.marketplace.application.auth.AuthService;
 import com.aiwb.marketplace.application.ports.EmailVerificationTokenRepository;
 import com.aiwb.marketplace.application.ports.ImageStorage;
+import com.aiwb.marketplace.application.ports.LoginAuditRepository;
 import com.aiwb.marketplace.application.ports.PasswordHasher;
+import com.aiwb.marketplace.application.ports.PasswordResetTokenRepository;
 import com.aiwb.marketplace.application.ports.RefreshTokenRepository;
 import com.aiwb.marketplace.application.ports.TokenService;
 import com.aiwb.marketplace.application.ports.UserRepository;
@@ -19,11 +21,13 @@ import com.aiwb.marketplace.application.ports.ModerationActionRepository;
 import com.aiwb.marketplace.application.ports.BlockRepository;
 import com.aiwb.marketplace.application.ports.AppealRepository;
 import com.aiwb.marketplace.application.ports.BlockQueryRepository;
+import com.aiwb.marketplace.application.ports.MetricsRepository;
 import com.aiwb.marketplace.application.product.ProductService;
 import com.aiwb.marketplace.application.order.OrderService;
 import com.aiwb.marketplace.application.moderation.ModerationService;
 import com.aiwb.marketplace.application.search.SearchService;
 import com.aiwb.marketplace.application.notification.NotificationService;
+import com.aiwb.marketplace.application.metrics.MetricsService;
 import com.aiwb.marketplace.infrastructure.security.BCryptPasswordHasher;
 import com.aiwb.marketplace.infrastructure.security.JwtTokenService;
 import com.aiwb.marketplace.infrastructure.storage.LocalImageStorage;
@@ -61,6 +65,8 @@ public class ApplicationConfig {
     public AuthService authService(UserRepository userRepository,
                                    RefreshTokenRepository refreshTokenRepository,
                                    EmailVerificationTokenRepository verificationTokenRepository,
+                                   PasswordResetTokenRepository passwordResetTokenRepository,
+                                   LoginAuditRepository loginAuditRepository,
                                    TokenService tokenService,
                                    PasswordHasher passwordHasher,
                                    Clock clock,
@@ -70,10 +76,13 @@ public class ApplicationConfig {
                 userRepository,
                 refreshTokenRepository,
                 verificationTokenRepository,
+                passwordResetTokenRepository,
+                loginAuditRepository,
                 tokenService,
                 passwordHasher,
                 clock,
                 authProperties.verificationTokenTtl(),
+                authProperties.passwordResetTokenTtl(),
                 notificationService
         );
     }
@@ -84,6 +93,11 @@ public class ApplicationConfig {
                                                    UserRepository userRepository,
                                                    Clock clock) {
         return new NotificationService(notificationRepository, emailSender, userRepository, clock);
+    }
+
+    @Bean
+    public MetricsService metricsService(MetricsRepository metricsRepository, Clock clock) {
+        return new MetricsService(metricsRepository, clock);
     }
 
     @Bean

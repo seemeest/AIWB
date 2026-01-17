@@ -43,6 +43,9 @@ public class UserEntity {
     @Column(nullable = false)
     private Instant createdAt;
 
+    @Column(nullable = false)
+    private int tokenVersion;
+
     public UUID getId() {
         return id;
     }
@@ -89,5 +92,13 @@ public class UserEntity {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getTokenVersion() {
+        return tokenVersion;
+    }
+
+    public void setTokenVersion(int tokenVersion) {
+        this.tokenVersion = tokenVersion;
     }
 }

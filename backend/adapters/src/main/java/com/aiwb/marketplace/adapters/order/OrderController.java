@@ -8,6 +8,7 @@ import com.aiwb.marketplace.domain.order.OrderItem;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,13 +42,13 @@ public class OrderController {
         return ResponseEntity.ok(toResponse(order));
     }
 
-    @PostMapping("/{id}/pay")
+    @PatchMapping("/{id}/payment")
     public ResponseEntity<OrderResponse> markPaid(@PathVariable("id") UUID orderId) {
         Order order = orderService.markPaid(orderId);
         return ResponseEntity.ok(toResponse(order));
     }
 
-    @PostMapping("/{id}/delivery-status")
+    @PatchMapping("/{id}/delivery-status")
     public ResponseEntity<OrderResponse> updateDelivery(@PathVariable("id") UUID orderId,
                                                         @Valid @RequestBody UpdateDeliveryStatusRequest request) {
         Order order = orderService.updateDeliveryStatus(new UpdateDeliveryStatusCommand(orderId, request.status()));

@@ -59,4 +59,9 @@ public class ProductService {
         productSearchIndex.index(saved);
         return saved;
     }
+
+    public Product getById(UUID productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+    }
 }

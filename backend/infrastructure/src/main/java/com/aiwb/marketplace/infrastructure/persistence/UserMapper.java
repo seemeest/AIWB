@@ -16,7 +16,8 @@ public final class UserMapper {
                 entity.getPasswordHash(),
                 entity.getStatus(),
                 entity.getRoles(),
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                entity.getTokenVersion()
         );
     }
 
@@ -28,6 +29,7 @@ public final class UserMapper {
         entity.setStatus(user.getStatus());
         entity.setRoles(user.getRoles());
         entity.setCreatedAt(user.getCreatedAt());
+        entity.setTokenVersion(user.getTokenVersion());
         return entity;
     }
 }

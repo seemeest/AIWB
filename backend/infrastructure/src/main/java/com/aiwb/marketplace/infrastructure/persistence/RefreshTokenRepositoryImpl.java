@@ -24,9 +24,14 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         RefreshTokenEntity entity = new RefreshTokenEntity();
         entity.setToken(token.token());
         entity.setUserId(token.userId());
+        entity.setTokenVersion(token.tokenVersion());
         entity.setExpiresAt(token.expiresAt());
         entity.setCreatedAt(token.createdAt());
         entity.setRevoked(token.revoked());
+        entity.setUserAgent(token.userAgent());
+        entity.setIp(token.ip());
+        entity.setDevice(token.device());
+        entity.setBrowser(token.browser());
         RefreshTokenEntity saved = jpaRepository.save(entity);
         return toDomain(saved);
     }
@@ -61,9 +66,14 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         return new RefreshToken(
                 entity.getToken(),
                 entity.getUserId(),
+                entity.getTokenVersion(),
                 entity.getExpiresAt(),
                 entity.getCreatedAt(),
-                entity.isRevoked()
+                entity.isRevoked(),
+                entity.getUserAgent(),
+                entity.getIp(),
+                entity.getDevice(),
+                entity.getBrowser()
         );
     }
 }

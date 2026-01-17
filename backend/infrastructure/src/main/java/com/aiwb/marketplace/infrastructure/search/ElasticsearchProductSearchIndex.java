@@ -65,11 +65,12 @@ public class ElasticsearchProductSearchIndex implements ProductSearchIndex {
             response.hits().hits().forEach(hit -> {
                 Map source = hit.source();
                 UUID id = UUID.fromString(String.valueOf(source.get("id")));
+                UUID sellerId = UUID.fromString(String.valueOf(source.get("sellerId")));
                 String title = String.valueOf(source.get("title"));
                 String description = source.get("description") == null ? null : String.valueOf(source.get("description"));
                 BigDecimal price = new BigDecimal(String.valueOf(source.get("price")));
                 String status = String.valueOf(source.get("status"));
-                results.add(new SearchResult(id, title, description, price, status));
+                results.add(new SearchResult(id, sellerId, title, description, price, status));
             });
             return results;
         } catch (IOException ex) {
