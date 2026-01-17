@@ -7,6 +7,8 @@ import com.aiwb.marketplace.application.ports.PasswordHasher;
 import com.aiwb.marketplace.application.ports.RefreshTokenRepository;
 import com.aiwb.marketplace.application.ports.TokenService;
 import com.aiwb.marketplace.application.ports.UserRepository;
+import com.aiwb.marketplace.application.ports.NotificationRepository;
+import com.aiwb.marketplace.application.ports.EmailSender;
 import com.aiwb.marketplace.application.ports.ProductRepository;
 import com.aiwb.marketplace.application.ports.ProductSearchIndex;
 import com.aiwb.marketplace.application.ports.OrderRepository;
@@ -21,6 +23,7 @@ import com.aiwb.marketplace.application.product.ProductService;
 import com.aiwb.marketplace.application.order.OrderService;
 import com.aiwb.marketplace.application.moderation.ModerationService;
 import com.aiwb.marketplace.application.search.SearchService;
+import com.aiwb.marketplace.application.notification.NotificationService;
 import com.aiwb.marketplace.infrastructure.security.BCryptPasswordHasher;
 import com.aiwb.marketplace.infrastructure.security.JwtTokenService;
 import com.aiwb.marketplace.infrastructure.storage.LocalImageStorage;
@@ -61,7 +64,8 @@ public class ApplicationConfig {
                                    TokenService tokenService,
                                    PasswordHasher passwordHasher,
                                    Clock clock,
-                                   AuthProperties authProperties) {
+                                   AuthProperties authProperties,
+                                   NotificationService notificationService) {
         return new AuthService(
                 userRepository,
                 refreshTokenRepository,
@@ -69,8 +73,17 @@ public class ApplicationConfig {
                 tokenService,
                 passwordHasher,
                 clock,
-                authProperties.verificationTokenTtl()
+                authProperties.verificationTokenTtl(),
+                notificationService
         );
+    }
+
+    @Bean
+    public NotificationService notificationService(NotificationRepository notificationRepository,
+                                                   EmailSender emailSender,
+                                                   UserRepository userRepository,
+                                                   Clock clock) {
+        return new NotificationService(notificationRepository, emailSender, userRepository, clock);
     }
 
     @Bean
@@ -90,8 +103,9 @@ public class ApplicationConfig {
     public OrderService orderService(OrderRepository orderRepository,
                                      PaymentService paymentService,
                                      DeliveryRepository deliveryRepository,
-                                     Clock clock) {
-        return new OrderService(orderRepository, paymentService, deliveryRepository, clock);
+                                     Clock clock,
+                                     NotificationService notificationService) {
+        return new OrderService(orderRepository, paymentService, deliveryRepository, clock, notificationService);
     }
 
     @Bean
@@ -101,7 +115,8 @@ public class ApplicationConfig {
                                                BlockQueryRepository blockQueryRepository,
                                                AppealRepository appealRepository,
                                                Clock clock,
-                                               ModerationProperties moderationProperties) {
+                                               ModerationProperties moderationProperties,
+                                               NotificationService notificationService) {
         return new ModerationService(
                 complaintRepository,
                 actionRepository,
@@ -109,7 +124,8 @@ public class ApplicationConfig {
                 blockQueryRepository,
                 appealRepository,
                 clock,
-                moderationProperties.appealWindow()
+                moderationProperties.appealWindow(),
+                notificationService
         );
     }
 }

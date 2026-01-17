@@ -5,6 +5,8 @@ import com.aiwb.marketplace.application.ports.PasswordHasher;
 import com.aiwb.marketplace.application.ports.RefreshTokenRepository;
 import com.aiwb.marketplace.application.ports.TokenService;
 import com.aiwb.marketplace.application.ports.UserRepository;
+import com.aiwb.marketplace.application.notification.NotificationService;
+import com.aiwb.marketplace.domain.notification.NotificationType;
 import com.aiwb.marketplace.domain.user.RoleType;
 import com.aiwb.marketplace.domain.user.User;
 import com.aiwb.marketplace.domain.user.UserStatus;
@@ -24,6 +26,7 @@ public class AuthService {
     private final PasswordHasher passwordHasher;
     private final Clock clock;
     private final Duration verificationTokenTtl;
+    private final NotificationService notificationService;
 
     public AuthService(UserRepository userRepository,
                        RefreshTokenRepository refreshTokenRepository,
@@ -31,7 +34,8 @@ public class AuthService {
                        TokenService tokenService,
                        PasswordHasher passwordHasher,
                        Clock clock,
-                       Duration verificationTokenTtl) {
+                       Duration verificationTokenTtl,
+                       NotificationService notificationService) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.verificationTokenRepository = verificationTokenRepository;
@@ -39,6 +43,7 @@ public class AuthService {
         this.passwordHasher = passwordHasher;
         this.clock = clock;
         this.verificationTokenTtl = verificationTokenTtl;
+        this.notificationService = notificationService;
     }
 
     public RegistrationResult register(RegisterCommand command) {
@@ -60,6 +65,10 @@ public class AuthService {
         EmailVerificationToken verificationToken =
                 new EmailVerificationToken(token, user.getId(), now.plus(verificationTokenTtl), now);
         verificationTokenRepository.save(verificationToken);
+        notificationService.notifyUser(user.getId(), NotificationType.REGISTRATION,
+                "Регистрация",
+                "Регистрация завершена. Подтвердите email по токену.",
+                null);
 
         return new RegistrationResult(token);
     }
@@ -74,6 +83,10 @@ public class AuthService {
 
         userRepository.save(user.verifyEmail());
         verificationTokenRepository.delete(token);
+        notificationService.notifyUser(user.getId(), NotificationType.EMAIL_VERIFIED,
+                "Email подтвержден",
+                "Email подтвержден. Теперь доступен вход в аккаунт.",
+                null);
     }
 
     public AuthTokens login(LoginCommand command) {

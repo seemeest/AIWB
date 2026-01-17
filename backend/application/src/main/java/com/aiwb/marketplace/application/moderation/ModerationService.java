@@ -12,6 +12,8 @@ import com.aiwb.marketplace.domain.moderation.Complaint;
 import com.aiwb.marketplace.domain.moderation.ComplaintStatus;
 import com.aiwb.marketplace.domain.moderation.ModerationAction;
 import com.aiwb.marketplace.domain.moderation.ModerationTargetType;
+import com.aiwb.marketplace.application.notification.NotificationService;
+import com.aiwb.marketplace.domain.notification.NotificationType;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -26,6 +28,7 @@ public class ModerationService {
     private final AppealRepository appealRepository;
     private final Clock clock;
     private final Duration appealWindow;
+    private final NotificationService notificationService;
 
     public ModerationService(ComplaintRepository complaintRepository,
                              ModerationActionRepository actionRepository,
@@ -33,7 +36,8 @@ public class ModerationService {
                              BlockQueryRepository blockQueryRepository,
                              AppealRepository appealRepository,
                              Clock clock,
-                             Duration appealWindow) {
+                             Duration appealWindow,
+                             NotificationService notificationService) {
         this.complaintRepository = complaintRepository;
         this.actionRepository = actionRepository;
         this.blockRepository = blockRepository;
@@ -41,6 +45,7 @@ public class ModerationService {
         this.appealRepository = appealRepository;
         this.clock = clock;
         this.appealWindow = appealWindow;
+        this.notificationService = notificationService;
     }
 
     public Complaint createComplaint(CreateComplaintCommand command) {
@@ -70,6 +75,12 @@ public class ModerationService {
                     command.blockedUntil()
             );
             blockRepository.save(block);
+            if (command.targetType() == ModerationTargetType.SELLER || command.targetType() == ModerationTargetType.BUYER) {
+                notificationService.notifyUser(command.targetId(), NotificationType.MODERATION_BLOCKED,
+                        "Блокировка",
+                        "Аккаунт заблокирован. Причина: " + command.reason(),
+                        null);
+            }
         }
         return action;
     }
@@ -90,6 +101,11 @@ public class ModerationService {
                 .orElseThrow(() -> new ModerationException(ModerationError.APPEAL_NOT_FOUND, "Appeal not found"));
         AppealStatus status = approved ? AppealStatus.APPROVED : AppealStatus.REJECTED;
         Appeal updated = appeal.updateStatus(status);
-        return appealRepository.save(updated);
+        Appeal saved = appealRepository.save(updated);
+        notificationService.notifyUser(saved.getAuthorId(), NotificationType.APPEAL_DECISION,
+                "Решение по апелляции",
+                "Апелляция " + saved.getId() + " рассмотрена: " + saved.getStatus().name(),
+                null);
+        return saved;
     }
 }
