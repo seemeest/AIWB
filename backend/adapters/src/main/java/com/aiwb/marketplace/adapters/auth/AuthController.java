@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,14 +41,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request,
+                                              HttpServletRequest httpRequest) {
+        String userAgent = headerOrNull(httpRequest, "User-Agent");
+        String ip = resolveClientIp(httpRequest);
+        String device = headerOrNull(httpRequest, "X-Device");
+        String browser = headerOrNull(httpRequest, "X-Browser");
         AuthTokens tokens = authService.login(new LoginCommand(
                 request.email(),
                 request.password(),
-                request.userAgent(),
-                request.ip(),
-                request.device(),
-                request.browser()
+                userAgent,
+                ip,
+                device,
+                browser
         ));
         return ResponseEntity.ok(new AuthResponse(tokens.accessToken(), tokens.refreshToken()));
     }
@@ -78,5 +84,22 @@ public class AuthController {
                 request.newPassword()
         ));
         return ResponseEntity.ok(new MessageResponse("Password changed"));
+    }
+
+    private String resolveClientIp(HttpServletRequest request) {
+        String forwardedFor = headerOrNull(request, "X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return forwardedFor.split(",")[0].trim();
+        }
+        String realIp = headerOrNull(request, "X-Real-IP");
+        if (realIp != null && !realIp.isBlank()) {
+            return realIp.trim();
+        }
+        return request.getRemoteAddr();
+    }
+
+    private String headerOrNull(HttpServletRequest request, String name) {
+        String value = request.getHeader(name);
+        return value == null || value.isBlank() ? null : value.trim();
     }
 }
