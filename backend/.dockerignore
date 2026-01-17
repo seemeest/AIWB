@@ -1,0 +1,7 @@
+.gradle
+**/build
+**/bin
+gradle-dist
+jdk
+storage
+docker-compose.yml

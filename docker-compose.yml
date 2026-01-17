@@ -1,6 +1,25 @@
 version: "3.9"
 
 services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: marketplace-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/marketplace
+      SPRING_DATASOURCE_USERNAME: marketplace
+      SPRING_DATASOURCE_PASSWORD: marketplace
+      SEARCH_ELASTICSEARCH_URL: http://elasticsearch:9200
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - elasticsearch
+      - redis
+      - kafka
+      - otel-collector
+
   postgres:
     image: postgres:16
     container_name: marketplace-postgres

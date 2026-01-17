@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/marketplace
-    username: marketplace
-    password: marketplace
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/marketplace}
+    username: ${SPRING_DATASOURCE_USERNAME:marketplace}
+    password: ${SPRING_DATASOURCE_PASSWORD:marketplace}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -26,7 +26,7 @@ storage:
 
 search:
   elasticsearch:
-    url: http://localhost:9200
+    url: ${SEARCH_ELASTICSEARCH_URL:http://localhost:9200}
     index: products
 
 moderation:
