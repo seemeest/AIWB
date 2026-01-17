@@ -1,0 +1,13 @@
+package com.aiwb.marketplace.application.auth;
+
+public enum AuthError {
+    EMAIL_ALREADY_USED,
+    INVALID_CREDENTIALS,
+    EMAIL_NOT_VERIFIED,
+    USER_BLOCKED,
+    INVALID_REFRESH_TOKEN,
+    INVALID_ACCESS_TOKEN,
+    TOKEN_EXPIRED,
+    USER_NOT_FOUND,
+    VERIFICATION_TOKEN_INVALID
+}

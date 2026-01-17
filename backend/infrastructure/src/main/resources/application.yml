@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/marketplace
+    username: marketplace
+    password: marketplace
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:change-this-secret-please-change-32chars}
+    access-token-ttl-minutes: 15
+    refresh-token-ttl-days: 30
+  auth:
+    verification-token-ttl-hours: 24
