@@ -3,7 +3,6 @@ package com.aiwb.marketplace.infrastructure.kafka;
 import com.aiwb.marketplace.application.events.LoginAuditEvent;
 import com.aiwb.marketplace.application.ports.LoginAuditRepository;
 import com.aiwb.marketplace.domain.user.LoginAudit;
-import com.aiwb.marketplace.infrastructure.config.KafkaTopicsProperties;
 import com.aiwb.marketplace.infrastructure.geoip.GeoIpLocation;
 import com.aiwb.marketplace.infrastructure.geoip.GeoIpService;
 import org.slf4j.Logger;
@@ -18,17 +17,14 @@ public class LoginAuditGeoIpListener {
     private static final Logger log = LoggerFactory.getLogger(LoginAuditGeoIpListener.class);
     private final GeoIpService geoIpService;
     private final LoginAuditRepository loginAuditRepository;
-    private final KafkaTopicsProperties topics;
 
     public LoginAuditGeoIpListener(GeoIpService geoIpService,
-                                   LoginAuditRepository loginAuditRepository,
-                                   KafkaTopicsProperties topics) {
+                                   LoginAuditRepository loginAuditRepository) {
         this.geoIpService = geoIpService;
         this.loginAuditRepository = loginAuditRepository;
-        this.topics = topics;
     }
 
-    @KafkaListener(topics = "#{@kafkaTopicsProperties.loginAudit}", groupId = "geoip-enricher")
+    @KafkaListener(topics = "${app.kafka.topics.login-audit:login-audit}", groupId = "geoip-enricher")
     public void handle(LoginAuditEvent event) {
         if (event == null || event.userId() == null) {
             return;
