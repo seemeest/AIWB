@@ -28,3 +28,6 @@ search:
   elasticsearch:
     url: http://localhost:9200
     index: products
+
+moderation:
+  appeal-window-days: 7

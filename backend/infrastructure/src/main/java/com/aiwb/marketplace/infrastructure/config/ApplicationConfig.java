@@ -12,8 +12,14 @@ import com.aiwb.marketplace.application.ports.ProductSearchIndex;
 import com.aiwb.marketplace.application.ports.OrderRepository;
 import com.aiwb.marketplace.application.ports.PaymentService;
 import com.aiwb.marketplace.application.ports.DeliveryRepository;
+import com.aiwb.marketplace.application.ports.ComplaintRepository;
+import com.aiwb.marketplace.application.ports.ModerationActionRepository;
+import com.aiwb.marketplace.application.ports.BlockRepository;
+import com.aiwb.marketplace.application.ports.AppealRepository;
+import com.aiwb.marketplace.application.ports.BlockQueryRepository;
 import com.aiwb.marketplace.application.product.ProductService;
 import com.aiwb.marketplace.application.order.OrderService;
+import com.aiwb.marketplace.application.moderation.ModerationService;
 import com.aiwb.marketplace.application.search.SearchService;
 import com.aiwb.marketplace.infrastructure.security.BCryptPasswordHasher;
 import com.aiwb.marketplace.infrastructure.security.JwtTokenService;
@@ -25,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Clock;
 
 @Configuration
-@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class, StorageProperties.class, SearchProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class, StorageProperties.class, SearchProperties.class, ModerationProperties.class})
 public class ApplicationConfig {
 
     @Bean
@@ -86,5 +92,24 @@ public class ApplicationConfig {
                                      DeliveryRepository deliveryRepository,
                                      Clock clock) {
         return new OrderService(orderRepository, paymentService, deliveryRepository, clock);
+    }
+
+    @Bean
+    public ModerationService moderationService(ComplaintRepository complaintRepository,
+                                               ModerationActionRepository actionRepository,
+                                               BlockRepository blockRepository,
+                                               BlockQueryRepository blockQueryRepository,
+                                               AppealRepository appealRepository,
+                                               Clock clock,
+                                               ModerationProperties moderationProperties) {
+        return new ModerationService(
+                complaintRepository,
+                actionRepository,
+                blockRepository,
+                blockQueryRepository,
+                appealRepository,
+                clock,
+                moderationProperties.appealWindow()
+        );
     }
 }

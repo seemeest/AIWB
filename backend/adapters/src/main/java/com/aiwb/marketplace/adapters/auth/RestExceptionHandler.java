@@ -1,6 +1,7 @@
 package com.aiwb.marketplace.adapters.auth;
 
 import com.aiwb.marketplace.application.auth.AuthException;
+import com.aiwb.marketplace.application.moderation.ModerationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,5 +26,14 @@ public class RestExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         return ResponseEntity.badRequest().body(new ErrorResponse("VALIDATION_ERROR", "Invalid request"));
+    }
+
+    @ExceptionHandler(ModerationException.class)
+    public ResponseEntity<ErrorResponse> handleModeration(ModerationException ex) {
+        HttpStatus status = switch (ex.getError()) {
+            case APPEAL_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case APPEAL_WINDOW_EXPIRED, APPEAL_ALREADY_EXISTS, COMPLAINT_NOT_FOUND -> HttpStatus.BAD_REQUEST;
+        };
+        return ResponseEntity.status(status).body(new ErrorResponse(ex.getError().name(), ex.getMessage()));
     }
 }
