@@ -5,10 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 public record LoginRequest(
         @Email @NotBlank String email,
-        @NotBlank String password,
-        String userAgent,
-        String ip,
-        String device,
-        String browser
+        @NotBlank String password
 ) {
 }
