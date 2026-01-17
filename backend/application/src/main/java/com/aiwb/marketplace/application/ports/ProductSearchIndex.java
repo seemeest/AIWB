@@ -9,4 +9,5 @@ public interface ProductSearchIndex {
     void index(Product product);
     List<SearchResult> search(String query, int limit);
     List<String> suggest(String prefix, int limit);
+    List<SearchResult> similar(java.util.UUID productId, String query, int limit);
 }

@@ -60,6 +60,24 @@ public class ProductService {
         return saved;
     }
 
+    public Product update(UpdateProductCommand command) {
+        Product product = productRepository.findById(command.productId())
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        if (!product.getSellerId().equals(command.sellerId())) {
+            throw new IllegalArgumentException("Seller mismatch");
+        }
+
+        String title = command.title() == null ? product.getTitle() : command.title();
+        String description = command.description() == null ? product.getDescription() : command.description();
+        java.math.BigDecimal price = command.price() == null ? product.getPrice() : command.price();
+        int quantity = command.quantity() == null ? product.getQuantity() : command.quantity();
+
+        Product updated = product.updateDetails(title, description, price, quantity, clock.instant());
+        Product saved = productRepository.save(updated);
+        productSearchIndex.index(saved);
+        return saved;
+    }
+
     public Product getById(UUID productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));

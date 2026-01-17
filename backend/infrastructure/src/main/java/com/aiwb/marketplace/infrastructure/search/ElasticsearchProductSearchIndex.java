@@ -99,6 +99,37 @@ public class ElasticsearchProductSearchIndex implements ProductSearchIndex {
         }
     }
 
+    @Override
+    public List<SearchResult> similar(UUID productId, String query, int limit) {
+        SearchRequest request = SearchRequest.of(s -> s
+                .index(properties.getIndex())
+                .size(limit)
+                .query(q -> q.bool(b -> b
+                        .must(m -> m.multiMatch(mm -> mm
+                                .query(query)
+                                .fields("title^2", "description")
+                        ))
+                        .mustNot(m -> m.term(t -> t.field("id").value(productId.toString())))
+                )));
+        try {
+            SearchResponse<Map> response = client.search(request, Map.class);
+            List<SearchResult> results = new ArrayList<>();
+            response.hits().hits().forEach(hit -> {
+                Map source = hit.source();
+                UUID id = UUID.fromString(String.valueOf(source.get("id")));
+                UUID sellerId = UUID.fromString(String.valueOf(source.get("sellerId")));
+                String title = String.valueOf(source.get("title"));
+                String description = source.get("description") == null ? null : String.valueOf(source.get("description"));
+                BigDecimal price = new BigDecimal(String.valueOf(source.get("price")));
+                String status = String.valueOf(source.get("status"));
+                results.add(new SearchResult(id, sellerId, title, description, price, status));
+            });
+            return results;
+        } catch (IOException ex) {
+            throw new IllegalStateException("Similar search failed", ex);
+        }
+    }
+
     private void ensureIndex() {
         try {
             boolean exists = client.indices().exists(e -> e.index(properties.getIndex())).value();

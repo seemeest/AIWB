@@ -4,12 +4,14 @@ import com.aiwb.marketplace.application.metrics.MetricsService;
 import com.aiwb.marketplace.application.product.AddImageCommand;
 import com.aiwb.marketplace.application.product.CreateProductCommand;
 import com.aiwb.marketplace.application.product.ProductService;
+import com.aiwb.marketplace.application.search.SearchService;
 import com.aiwb.marketplace.domain.product.Product;
 import com.aiwb.marketplace.domain.product.ProductImage;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +30,12 @@ import java.util.UUID;
 public class ProductController {
     private final ProductService productService;
     private final MetricsService metricsService;
+    private final SearchService searchService;
 
-    public ProductController(ProductService productService, MetricsService metricsService) {
+    public ProductController(ProductService productService, MetricsService metricsService, SearchService searchService) {
         this.productService = productService;
         this.metricsService = metricsService;
+        this.searchService = searchService;
     }
 
     @PostMapping
@@ -66,6 +70,37 @@ public class ProductController {
         Product product = productService.getById(productId);
         metricsService.recordProductView(product.getId(), product.getSellerId(), viewerId, sessionId);
         return ResponseEntity.ok(toResponse(product));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductResponse> update(@PathVariable("id") UUID productId,
+                                                  @Valid @RequestBody UpdateProductRequest request) {
+        Product product = productService.update(new com.aiwb.marketplace.application.product.UpdateProductCommand(
+                productId,
+                request.sellerId(),
+                request.title(),
+                request.description(),
+                request.price(),
+                request.quantity()
+        ));
+        return ResponseEntity.ok(toResponse(product));
+    }
+
+    @GetMapping("/{id}/similar")
+    public ResponseEntity<SimilarProductsResponse> similar(@PathVariable("id") UUID productId,
+                                                           @RequestParam(value = "limit", defaultValue = "10") int limit) {
+        Product product = productService.getById(productId);
+        List<SimilarProductItem> items = searchService.similar(productId, product.getTitle(), limit).stream()
+                .map(result -> new SimilarProductItem(
+                        result.id(),
+                        result.sellerId(),
+                        result.title(),
+                        result.description(),
+                        result.price(),
+                        result.status()
+                ))
+                .toList();
+        return ResponseEntity.ok(new SimilarProductsResponse(items));
     }
 
     private ProductResponse toResponse(Product product) {

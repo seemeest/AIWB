@@ -18,4 +18,8 @@ public class SearchService {
     public List<String> suggest(String prefix, int limit) {
         return productSearchIndex.suggest(prefix, limit);
     }
+
+    public List<SearchResult> similar(java.util.UUID productId, String query, int limit) {
+        return productSearchIndex.similar(productId, query, limit);
+    }
 }

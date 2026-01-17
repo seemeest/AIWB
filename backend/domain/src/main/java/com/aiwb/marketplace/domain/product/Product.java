@@ -73,6 +73,10 @@ public final class Product {
         return new Product(id, sellerId, title, description, price, quantity, status, createdAt, Instant.now(), nextImages);
     }
 
+    public Product updateDetails(String title, String description, BigDecimal price, int quantity, Instant now) {
+        return new Product(id, sellerId, title, description, price, quantity, status, createdAt, now, images);
+    }
+
     public Product publish() {
         if (status == ProductStatus.PUBLISHED) {
             return this;
