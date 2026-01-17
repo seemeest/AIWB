@@ -9,7 +9,11 @@ import com.aiwb.marketplace.application.ports.TokenService;
 import com.aiwb.marketplace.application.ports.UserRepository;
 import com.aiwb.marketplace.application.ports.ProductRepository;
 import com.aiwb.marketplace.application.ports.ProductSearchIndex;
+import com.aiwb.marketplace.application.ports.OrderRepository;
+import com.aiwb.marketplace.application.ports.PaymentService;
+import com.aiwb.marketplace.application.ports.DeliveryRepository;
 import com.aiwb.marketplace.application.product.ProductService;
+import com.aiwb.marketplace.application.order.OrderService;
 import com.aiwb.marketplace.application.search.SearchService;
 import com.aiwb.marketplace.infrastructure.security.BCryptPasswordHasher;
 import com.aiwb.marketplace.infrastructure.security.JwtTokenService;
@@ -74,5 +78,13 @@ public class ApplicationConfig {
     @Bean
     public SearchService searchService(ProductSearchIndex productSearchIndex) {
         return new SearchService(productSearchIndex);
+    }
+
+    @Bean
+    public OrderService orderService(OrderRepository orderRepository,
+                                     PaymentService paymentService,
+                                     DeliveryRepository deliveryRepository,
+                                     Clock clock) {
+        return new OrderService(orderRepository, paymentService, deliveryRepository, clock);
     }
 }
