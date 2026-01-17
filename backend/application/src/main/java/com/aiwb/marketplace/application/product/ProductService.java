@@ -2,6 +2,7 @@ package com.aiwb.marketplace.application.product;
 
 import com.aiwb.marketplace.application.ports.ImageStorage;
 import com.aiwb.marketplace.application.ports.ProductRepository;
+import com.aiwb.marketplace.application.ports.ProductSearchIndex;
 import com.aiwb.marketplace.domain.product.Product;
 import com.aiwb.marketplace.domain.product.ProductImage;
 
@@ -12,11 +13,16 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ImageStorage imageStorage;
+    private final ProductSearchIndex productSearchIndex;
     private final Clock clock;
 
-    public ProductService(ProductRepository productRepository, ImageStorage imageStorage, Clock clock) {
+    public ProductService(ProductRepository productRepository,
+                          ImageStorage imageStorage,
+                          ProductSearchIndex productSearchIndex,
+                          Clock clock) {
         this.productRepository = productRepository;
         this.imageStorage = imageStorage;
+        this.productSearchIndex = productSearchIndex;
         this.clock = clock;
     }
 
@@ -31,7 +37,9 @@ public class ProductService {
                 command.quantity(),
                 now
         );
-        return productRepository.save(product);
+        Product saved = productRepository.save(product);
+        productSearchIndex.index(saved);
+        return saved;
     }
 
     public Product addImage(AddImageCommand command) {
@@ -47,6 +55,8 @@ public class ProductService {
 
         ProductImage image = new ProductImage(UUID.randomUUID(), storedPath, product.getImages().size(), clock.instant());
         Product updated = product.addImage(image);
-        return productRepository.save(updated);
+        Product saved = productRepository.save(updated);
+        productSearchIndex.index(saved);
+        return saved;
     }
 }

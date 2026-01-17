@@ -23,3 +23,8 @@ security:
 storage:
   images:
     root: storage/images
+
+search:
+  elasticsearch:
+    url: http://localhost:9200
+    index: products

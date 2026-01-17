@@ -8,7 +8,9 @@ import com.aiwb.marketplace.application.ports.RefreshTokenRepository;
 import com.aiwb.marketplace.application.ports.TokenService;
 import com.aiwb.marketplace.application.ports.UserRepository;
 import com.aiwb.marketplace.application.ports.ProductRepository;
+import com.aiwb.marketplace.application.ports.ProductSearchIndex;
 import com.aiwb.marketplace.application.product.ProductService;
+import com.aiwb.marketplace.application.search.SearchService;
 import com.aiwb.marketplace.infrastructure.security.BCryptPasswordHasher;
 import com.aiwb.marketplace.infrastructure.security.JwtTokenService;
 import com.aiwb.marketplace.infrastructure.storage.LocalImageStorage;
@@ -19,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Clock;
 
 @Configuration
-@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class, StorageProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class, StorageProperties.class, SearchProperties.class})
 public class ApplicationConfig {
 
     @Bean
@@ -64,7 +66,13 @@ public class ApplicationConfig {
     @Bean
     public ProductService productService(ProductRepository productRepository,
                                          ImageStorage imageStorage,
+                                         ProductSearchIndex productSearchIndex,
                                          Clock clock) {
-        return new ProductService(productRepository, imageStorage, clock);
+        return new ProductService(productRepository, imageStorage, productSearchIndex, clock);
+    }
+
+    @Bean
+    public SearchService searchService(ProductSearchIndex productSearchIndex) {
+        return new SearchService(productSearchIndex);
     }
 }
