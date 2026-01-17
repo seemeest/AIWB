@@ -12,7 +12,7 @@
 ## Реализация
 - [x] Зафиксировать Java стек и инструменты сборки. (created 2026-01-17) (completed 2026-01-17: Spring Boot 3, Java 21, Gradle, JPA/Hibernate, Flyway)
 - [x] Подготовить структуру репозитория по чистой архитектуре (backend: domain/application/adapters/infrastructure; frontend). (created 2026-01-17) (completed 2026-01-17: созданы каталоги и минимальные gradle файлы)
-- [ ] Настроить docker-compose для инфраструктуры (PostgreSQL, Elasticsearch, Redis, Kafka). (created 2026-01-17)
+- [x] Настроить docker-compose для инфраструктуры (PostgreSQL, Elasticsearch, Redis, Kafka). (created 2026-01-17) (completed 2026-01-17: добавлен docker-compose.yml)
 - [ ] Реализовать базовую аутентификацию и роли (JWT + refresh). (created 2026-01-17)
 - [ ] Реализовать каталог товаров и загрузку изображений с локальным хранилищем. (created 2026-01-17)
 - [ ] Реализовать поиск и автодополнение с индексацией. (created 2026-01-17)
