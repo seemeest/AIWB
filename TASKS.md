@@ -1,4 +1,4 @@
-# Задачи проекта
+﻿# Задачи проекта
 
 ## Планирование
 - [x] Зафиксировать архитектурный стек (Java фреймворк, БД, поисковый движок, хранилище медиа). (created 2026-01-17) (completed 2026-01-17: PostgreSQL, Elasticsearch, Redis, Kafka, локальное хранилище, Docker Compose, JWT+refresh)
@@ -14,6 +14,7 @@
 - [x] Подготовить структуру репозитория по чистой архитектуре (backend: domain/application/adapters/infrastructure; frontend). (created 2026-01-17) (completed 2026-01-17: созданы каталоги и минимальные gradle файлы)
 - [x] Настроить docker-compose для инфраструктуры (PostgreSQL, Elasticsearch, Redis, Kafka). (created 2026-01-17) (completed 2026-01-17: добавлен docker-compose.yml)
 - [x] Реализовать базовую аутентификацию и роли (JWT + refresh). (created 2026-01-17) (completed 2026-01-17: сервис регистрации/логина/refresh, JWT фильтр, роли, email-верификация)
+- [x] Настроить наблюдаемость (OpenTelemetry, Elasticsearch + Kibana для логов). (created 2026-01-17) (completed 2026-01-17: добавлены Kibana и OpenTelemetry Collector)
 - [ ] Реализовать каталог товаров и загрузку изображений с локальным хранилищем. (created 2026-01-17)
 - [ ] Реализовать поиск и автодополнение с индексацией. (created 2026-01-17)
 - [ ] Реализовать оформление заказов, оплату и статусы доставки. (created 2026-01-17)
