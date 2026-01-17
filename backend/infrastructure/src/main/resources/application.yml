@@ -11,6 +11,18 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: geoip-enricher
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.aiwb.marketplace.application.events"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 security:
   jwt:
@@ -32,6 +44,14 @@ search:
 
 moderation:
   appeal-window-days: 7
+
+geoip:
+  database-path: ${GEOIP_DB_PATH:}
+
+app:
+  kafka:
+    topics:
+      login-audit: ${LOGIN_AUDIT_TOPIC:login-audit}
 
 springdoc:
   api-docs:

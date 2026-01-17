@@ -47,6 +47,10 @@ public final class LoginAudit {
         return new LoginAudit(userId, lastLoginAt, userAgent, ip, device, browser, country, region, city);
     }
 
+    public LoginAudit withLocation(String country, String region, String city) {
+        return new LoginAudit(userId, lastLoginAt, userAgent, ip, device, browser, country, region, city);
+    }
+
     public UUID getUserId() {
         return userId;
     }

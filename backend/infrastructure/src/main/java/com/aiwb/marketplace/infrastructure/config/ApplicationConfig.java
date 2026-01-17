@@ -3,6 +3,7 @@ package com.aiwb.marketplace.infrastructure.config;
 import com.aiwb.marketplace.application.auth.AuthService;
 import com.aiwb.marketplace.application.ports.EmailVerificationTokenRepository;
 import com.aiwb.marketplace.application.ports.ImageStorage;
+import com.aiwb.marketplace.application.ports.LoginAuditEventPublisher;
 import com.aiwb.marketplace.application.ports.LoginAuditRepository;
 import com.aiwb.marketplace.application.ports.PasswordHasher;
 import com.aiwb.marketplace.application.ports.PasswordResetTokenRepository;
@@ -38,7 +39,15 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Clock;
 
 @Configuration
-@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class, StorageProperties.class, SearchProperties.class, ModerationProperties.class})
+@EnableConfigurationProperties({
+        JwtProperties.class,
+        AuthProperties.class,
+        StorageProperties.class,
+        SearchProperties.class,
+        ModerationProperties.class,
+        GeoIpProperties.class,
+        KafkaTopicsProperties.class
+})
 public class ApplicationConfig {
 
     @Bean
@@ -67,6 +76,7 @@ public class ApplicationConfig {
                                    EmailVerificationTokenRepository verificationTokenRepository,
                                    PasswordResetTokenRepository passwordResetTokenRepository,
                                    LoginAuditRepository loginAuditRepository,
+                                   LoginAuditEventPublisher loginAuditEventPublisher,
                                    TokenService tokenService,
                                    PasswordHasher passwordHasher,
                                    Clock clock,
@@ -78,6 +88,7 @@ public class ApplicationConfig {
                 verificationTokenRepository,
                 passwordResetTokenRepository,
                 loginAuditRepository,
+                loginAuditEventPublisher,
                 tokenService,
                 passwordHasher,
                 clock,

@@ -6,6 +6,23 @@ public final class LoginAuditMapper {
     private LoginAuditMapper() {
     }
 
+    public static LoginAudit toDomain(LoginAuditEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return LoginAudit.create(
+                entity.getUserId(),
+                entity.getLastLoginAt(),
+                entity.getUserAgent(),
+                entity.getIp(),
+                entity.getDevice(),
+                entity.getBrowser(),
+                entity.getCountry(),
+                entity.getRegion(),
+                entity.getCity()
+        );
+    }
+
     public static LoginAuditEntity toEntity(LoginAudit audit) {
         LoginAuditEntity entity = new LoginAuditEntity();
         entity.setUserId(audit.getUserId());

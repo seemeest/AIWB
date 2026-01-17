@@ -1,6 +1,7 @@
 package com.aiwb.marketplace.application.auth;
 
 import com.aiwb.marketplace.application.ports.EmailVerificationTokenRepository;
+import com.aiwb.marketplace.application.ports.LoginAuditEventPublisher;
 import com.aiwb.marketplace.application.ports.LoginAuditRepository;
 import com.aiwb.marketplace.application.ports.PasswordHasher;
 import com.aiwb.marketplace.application.ports.PasswordResetTokenRepository;
@@ -8,6 +9,7 @@ import com.aiwb.marketplace.application.ports.RefreshTokenRepository;
 import com.aiwb.marketplace.application.ports.TokenService;
 import com.aiwb.marketplace.application.ports.UserRepository;
 import com.aiwb.marketplace.application.notification.NotificationService;
+import com.aiwb.marketplace.application.events.LoginAuditEvent;
 import com.aiwb.marketplace.domain.notification.NotificationType;
 import com.aiwb.marketplace.domain.user.LoginAudit;
 import com.aiwb.marketplace.domain.user.RoleType;
@@ -27,6 +29,7 @@ public class AuthService {
     private final EmailVerificationTokenRepository verificationTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final LoginAuditRepository loginAuditRepository;
+    private final LoginAuditEventPublisher loginAuditEventPublisher;
     private final TokenService tokenService;
     private final PasswordHasher passwordHasher;
     private final Clock clock;
@@ -39,6 +42,7 @@ public class AuthService {
                        EmailVerificationTokenRepository verificationTokenRepository,
                        PasswordResetTokenRepository passwordResetTokenRepository,
                        LoginAuditRepository loginAuditRepository,
+                       LoginAuditEventPublisher loginAuditEventPublisher,
                        TokenService tokenService,
                        PasswordHasher passwordHasher,
                        Clock clock,
@@ -50,6 +54,7 @@ public class AuthService {
         this.verificationTokenRepository = verificationTokenRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.loginAuditRepository = loginAuditRepository;
+        this.loginAuditEventPublisher = loginAuditEventPublisher;
         this.tokenService = tokenService;
         this.passwordHasher = passwordHasher;
         this.clock = clock;
@@ -126,6 +131,12 @@ public class AuthService {
                 null,
                 null,
                 null
+        ));
+        loginAuditEventPublisher.publish(new LoginAuditEvent(
+                user.getId(),
+                command.ip(),
+                command.userAgent(),
+                clock.instant()
         ));
 
         return issueTokens(user, command.userAgent(), command.ip(), command.device(), command.browser());

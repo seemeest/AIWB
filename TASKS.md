@@ -30,7 +30,7 @@
 - [x] Реализовать отзыв всех активных refresh-токенов при смене/восстановлении пароля через версию токена. (created 2026-01-17) (completed 2026-01-17: token_version в users/refresh_tokens, проверка при refresh, revoke на reset/change)
 - [x] Добавить таблицу refresh_tokens и аудит последнего входа пользователя. (created 2026-01-17) (completed 2026-01-17: расширены refresh_tokens и добавлен login_audit)
 - [x] Сохранить user agent/устройство/локацию при логине для модерации. (created 2026-01-17) (completed 2026-01-17: сохраняются user agent/ip/device/browser, geoip будет асинхронно)
-- [ ] Реализовать асинхронное обогащение GeoIP через Kafka (GeoLite2, best-effort). (created 2026-01-17)
+- [x] Реализовать асинхронное обогащение GeoIP через Kafka (GeoLite2, best-effort). (created 2026-01-17) (completed 2026-01-17: Kafka event + consumer + GeoIP сервис)
 - [ ] Добавить редактирование товара/черновика без повторной модерации. (created 2026-01-17)
 - [ ] Добавить блок «Похожие товары» в карточке товара. (created 2026-01-17)
 - [ ] Подготовить план декомпозиции монолита на микросервисы. (created 2026-01-17)
