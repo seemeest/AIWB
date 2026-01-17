@@ -11,6 +11,7 @@ services:
       SPRING_DATASOURCE_USERNAME: marketplace
       SPRING_DATASOURCE_PASSWORD: marketplace
       SEARCH_ELASTICSEARCH_URL: http://elasticsearch:9200
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
       - "8080:8080"
     depends_on:
