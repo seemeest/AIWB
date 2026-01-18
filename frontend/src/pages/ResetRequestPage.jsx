@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { requestPasswordReset } from '../api/auth'
+import { resolveErrorMessage } from '../utils/errorMessages'
 
 export function ResetRequestPage() {
   const [email, setEmail] = useState('')
@@ -12,17 +13,17 @@ export function ResetRequestPage() {
     setError('')
     try {
       await requestPasswordReset(email)
-      setMessage('Р—Р°РїСЂРѕСЃ РѕС‚РїСЂР°РІР»РµРЅ. РџСЂРѕРІРµСЂСЊС‚Рµ email РёР»Рё СѓРІРµРґРѕРјР»РµРЅРёСЏ.')
+      setMessage('Заявка отправлена. Проверьте email или спам.')
     } catch (err) {
-      setError(err?.response?.data?.message || 'РћС€РёР±РєР° Р·Р°РїСЂРѕСЃР°')
+      setError(resolveErrorMessage(err, 'Ошибка запроса'))
     }
   }
 
   return (
     <div className="auth-shell">
       <div className="auth-card">
-        <h1>Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїР°СЂРѕР»СЏ</h1>
-        <p className="muted">РњС‹ РѕС‚РїСЂР°РІРёРј С‚РѕРєРµРЅ СЃР±СЂРѕСЃР° РЅР° email</p>
+        <h1>Восстановление пароля</h1>
+        <p className="muted">Мы отправим токен сброса на email</p>
         {error && <div className="alert">{error}</div>}
         {message && <div className="success">{message}</div>}
         <form onSubmit={handleSubmit} className="form">
@@ -31,11 +32,11 @@ export function ResetRequestPage() {
             <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
           </label>
           <button className="btn primary" type="submit">
-            РћС‚РїСЂР°РІРёС‚СЊ
+            Отправить
           </button>
         </form>
         <div className="auth-links-row">
-          <Link to="/reset/confirm">РЈ РјРµРЅСЏ РµСЃС‚СЊ С‚РѕРєРµРЅ</Link>
+          <Link to="/reset/confirm">Уже есть токен</Link>
         </div>
       </div>
     </div>

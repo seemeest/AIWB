@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { register } from '../api/auth'
+import { resolveErrorMessage } from '../utils/errorMessages'
 
 export function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -26,7 +27,7 @@ export function RegisterPage() {
       })
       setToken(result.verificationToken)
     } catch (err) {
-      setError(err?.response?.data?.message || 'Ошибка регистрации')
+      setError(resolveErrorMessage(err, 'Ошибка регистрации'))
     } finally {
       setLoading(false)
     }

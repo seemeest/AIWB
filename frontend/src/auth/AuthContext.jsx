@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { login as apiLogin, refresh as apiRefresh } from '../api/auth'
 import { setAccessToken } from '../api/client'
 
@@ -24,6 +24,7 @@ export function AuthProvider({ children }) {
     const stored = localStorage.getItem(STORAGE_KEY)
     return stored ? JSON.parse(stored) : null
   })
+  const refreshCheckedRef = useRef(false)
 
   useEffect(() => {
     if (auth?.accessToken) {
@@ -34,6 +35,19 @@ export function AuthProvider({ children }) {
       localStorage.removeItem(STORAGE_KEY)
     }
   }, [auth])
+
+  useEffect(() => {
+    if (refreshCheckedRef.current) {
+      return
+    }
+    refreshCheckedRef.current = true
+    if (!auth?.refreshToken) {
+      return
+    }
+    apiRefresh(auth.refreshToken)
+      .then((tokens) => setAuth(tokens))
+      .catch(() => setAuth(null))
+  }, [auth?.refreshToken])
 
   const value = useMemo(() => {
     const user = auth?.accessToken ? parseJwt(auth.accessToken) : null

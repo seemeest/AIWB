@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { resolveErrorMessage } from '../utils/errorMessages'
 
 export function LoginPage() {
   const auth = useAuth()
@@ -18,7 +19,7 @@ export function LoginPage() {
       await auth.login(email, password)
       navigate('/catalog')
     } catch (err) {
-      setError(err?.response?.data?.message || 'РћС€РёР±РєР° РІС…РѕРґР°')
+      setError(resolveErrorMessage(err, 'Ошибка входа'))
     } finally {
       setLoading(false)
     }
@@ -27,8 +28,8 @@ export function LoginPage() {
   return (
     <div className="auth-shell">
       <div className="auth-card">
-        <h1>Р’С…РѕРґ</h1>
-        <p className="muted">Р’РѕР№РґРёС‚Рµ, С‡С‚РѕР±С‹ РїСЂРѕРґРѕР»Р¶РёС‚СЊ РїРѕРєСѓРїРєРё Рё СѓРїСЂР°РІР»РµРЅРёРµ</p>
+        <h1>Вход</h1>
+        <p className="muted">Войдите, чтобы управлять заказами и покупками</p>
         {error && <div className="alert">{error}</div>}
         <form onSubmit={handleSubmit} className="form">
           <label>
@@ -36,16 +37,16 @@ export function LoginPage() {
             <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
           </label>
           <label>
-            РџР°СЂРѕР»СЊ
+            Пароль
             <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required />
           </label>
           <button className="btn primary" type="submit" disabled={loading}>
-            {loading ? 'Р’С…РѕРґ...' : 'Р’РѕР№С‚Рё'}
+            {loading ? 'Вход...' : 'Войти'}
           </button>
         </form>
         <div className="auth-links-row">
-          <Link to="/register">РЎРѕР·РґР°С‚СЊ Р°РєРєР°СѓРЅС‚</Link>
-          <Link to="/reset">Р—Р°Р±С‹Р»Рё РїР°СЂРѕР»СЊ?</Link>
+          <Link to="/register">Создать аккаунт</Link>
+          <Link to="/reset">Забыли пароль?</Link>
         </div>
       </div>
     </div>
