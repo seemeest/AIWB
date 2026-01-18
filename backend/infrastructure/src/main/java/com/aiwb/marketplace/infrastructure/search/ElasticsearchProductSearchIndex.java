@@ -9,6 +9,8 @@ import com.aiwb.marketplace.application.ports.ProductSearchIndex;
 import com.aiwb.marketplace.application.search.SearchResult;
 import com.aiwb.marketplace.domain.product.Product;
 import com.aiwb.marketplace.infrastructure.config.SearchProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ElasticsearchProductSearchIndex implements ProductSearchIndex {
+    private static final Logger log = LoggerFactory.getLogger(ElasticsearchProductSearchIndex.class);
     private final ElasticsearchClient client;
     private final SearchProperties properties;
 
@@ -147,8 +150,8 @@ public class ElasticsearchProductSearchIndex implements ProductSearchIndex {
                     .index(properties.getIndex())
                     .mappings(mapping)
             );
-        } catch (IOException ex) {
-            throw new IllegalStateException("Failed to create search index", ex);
+        } catch (Exception ex) {
+            log.warn("Search index init skipped: {}", ex.getMessage());
         }
     }
 }
