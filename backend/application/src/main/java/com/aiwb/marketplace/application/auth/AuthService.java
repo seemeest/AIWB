@@ -74,7 +74,15 @@ public class AuthService {
             roles = Set.of(RoleType.BUYER);
         }
 
-        User user = User.create(UUID.randomUUID(), email, passwordHasher.hash(command.password()), roles, clock.instant());
+        User user = User.create(
+                UUID.randomUUID(),
+                email,
+                passwordHasher.hash(command.password()),
+                command.fullName(),
+                command.birthDate(),
+                roles,
+                clock.instant()
+        );
         userRepository.save(user);
 
         String token = UUID.randomUUID().toString();

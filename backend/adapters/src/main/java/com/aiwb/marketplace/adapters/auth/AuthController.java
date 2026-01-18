@@ -29,7 +29,13 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody RegisterRequest request) {
         RegistrationResult result = authService.register(
-                new RegisterCommand(request.email(), request.password(), request.roles())
+                new RegisterCommand(
+                        request.email(),
+                        request.password(),
+                        request.fullName(),
+                        request.birthDate(),
+                        request.roles()
+                )
         );
         return ResponseEntity.ok(new RegistrationResponse(result.verificationToken()));
     }
