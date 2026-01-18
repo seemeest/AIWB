@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { payOrder, updateDeliveryStatus } from '../api/orders'
 
 const deliveryStatuses = [
@@ -28,7 +28,7 @@ export function OrdersPage() {
     setError('')
     try {
       const result = await payOrder(orderId)
-      setMessage(`Оплата подтверждена: ${result.status}`)
+      setMessage(`Заказ оплачен: ${result.status}`)
     } catch (err) {
       setError(err?.response?.data?.message || 'Ошибка оплаты')
     }
@@ -38,9 +38,9 @@ export function OrdersPage() {
     setError('')
     try {
       const result = await updateDeliveryStatus(orderId, status)
-      setMessage(`Статус обновлен: ${result.status}`)
+      setMessage(`Статус доставки обновлен: ${result.status}`)
     } catch (err) {
-      setError(err?.response?.data?.message || 'Ошибка обновления')
+      setError(err?.response?.data?.message || 'Ошибка обновления статуса')
     }
   }
 
@@ -70,7 +70,7 @@ export function OrdersPage() {
       </div>
       <div className="row-actions">
         <button className="btn primary" onClick={handlePay} disabled={!orderId}>
-          Подтвердить оплату
+          Оплатить
         </button>
         <button className="btn ghost" onClick={handleStatus} disabled={!orderId}>
           Обновить статус

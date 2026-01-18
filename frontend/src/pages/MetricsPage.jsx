@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { fetchSellerMetrics } from '../api/metrics'
 import { useAuth } from '../auth/AuthContext'
 
@@ -24,12 +24,12 @@ export function MetricsPage() {
     <section className="page">
       <header className="page-header">
         <h1>Метрики продавца</h1>
-        <p className="muted">Просмотры, позиция, конверсия</p>
+        <p className="muted">Просмотры, позиция в поиске, конверсия</p>
       </header>
       {error && <div className="alert">{error}</div>}
       <div className="form-grid">
         <label>
-          C (ISO)
+          С (ISO)
           <input value={from} onChange={(e) => setFrom(e.target.value)} placeholder="2026-01-01T00:00:00Z" />
         </label>
         <label>
@@ -38,16 +38,16 @@ export function MetricsPage() {
         </label>
       </div>
       <button className="btn primary" onClick={handleLoad}>
-        Показать
+        Загрузить
       </button>
       {metrics && (
         <div className="metrics-grid">
           <div className="metric-card">
-            <div className="metric-label">Уникальные просмотры</div>
+            <div className="metric-label">Уникальные просмотры карточек</div>
             <div className="metric-value">{metrics.uniqueViews}</div>
           </div>
           <div className="metric-card">
-            <div className="metric-label">Средняя позиция</div>
+            <div className="metric-label">Средняя позиция в поиске</div>
             <div className="metric-value">{Number(metrics.averageSearchPosition || 0).toFixed(2)}</div>
           </div>
           <div className="metric-card">

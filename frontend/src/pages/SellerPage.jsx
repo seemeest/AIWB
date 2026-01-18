@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { createProduct, updateProduct, uploadProductImage } from '../api/products'
 import { useAuth } from '../auth/AuthContext'
 
@@ -36,7 +36,7 @@ export function SellerPage() {
       const product = await createProduct(payload)
       setCreated(product)
     } catch (err) {
-      setError(err?.response?.data?.message || 'Ошибка создания')
+      setError(err?.response?.data?.message || 'Ошибка создания товара')
     }
   }
 
@@ -53,7 +53,7 @@ export function SellerPage() {
       const product = await updateProduct(updateId, payload)
       setCreated(product)
     } catch (err) {
-      setError(err?.response?.data?.message || 'Ошибка обновления')
+      setError(err?.response?.data?.message || 'Ошибка обновления товара')
     }
   }
 
@@ -61,13 +61,13 @@ export function SellerPage() {
     setError('')
     try {
       if (!created?.id || !imageFile) {
-        setError('Нужен продукт и файл')
+        setError('Выберите товар и файл')
         return
       }
       const product = await uploadProductImage(created.id, sellerId, imageFile)
       setCreated(product)
     } catch (err) {
-      setError(err?.response?.data?.message || 'Ошибка загрузки')
+      setError(err?.response?.data?.message || 'Ошибка загрузки изображения')
     }
   }
 
@@ -75,7 +75,7 @@ export function SellerPage() {
     <section className="page">
       <header className="page-header">
         <h1>Кабинет продавца</h1>
-        <p className="muted">Создайте и обновляйте карточки товара</p>
+        <p className="muted">Создавайте и редактируйте товары</p>
       </header>
       {error && <div className="alert">{error}</div>}
       <div className="split">
@@ -133,17 +133,17 @@ export function SellerPage() {
         </div>
       </div>
       <div className="panel">
-        <h2>Изображения</h2>
+        <h2>Фотографии</h2>
         <div className="row-actions">
           <input type="file" onChange={(e) => setImageFile(e.target.files[0])} />
           <button className="btn primary" onClick={handleUpload} disabled={!imageFile}>
-            Загрузить для созданного товара
+            Загрузить изображение
           </button>
         </div>
       </div>
       {created && (
         <div className="result-box">
-          Последний товар: <strong>{created.id}</strong>
+          Товар сохранен: <strong>{created.id}</strong>
         </div>
       )}
     </section>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { fetchNotifications, markNotificationRead } from '../api/notifications'
 import { useAuth } from '../auth/AuthContext'
 
@@ -33,7 +33,7 @@ export function NotificationsPage() {
     <section className="page">
       <header className="page-header">
         <h1>Уведомления</h1>
-        <p className="muted">История событий и статусов</p>
+        <p className="muted">Системные события и статусы</p>
       </header>
       {error && <div className="alert">{error}</div>}
       <div className="list">
@@ -47,7 +47,7 @@ export function NotificationsPage() {
               <span className="tag">{item.status}</span>
               {item.status !== 'READ' && (
                 <button className="btn ghost" onClick={() => handleRead(item.id)}>
-                  Прочитано
+                  Прочитать
                 </button>
               )}
             </div>

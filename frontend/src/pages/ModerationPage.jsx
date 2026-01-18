@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { createAppeal, createComplaint, createDecision, decideAppeal } from '../api/moderation'
 
 export function ModerationPage() {
@@ -23,7 +23,7 @@ export function ModerationPage() {
       const result = await fn(payload)
       setMessage(`Успешно: ${JSON.stringify(result)}`)
     } catch (err) {
-      setError(err?.response?.data?.message || 'Ошибка')
+      setError(err?.response?.data?.message || 'Ошибка запроса')
     }
   }
 
@@ -31,7 +31,7 @@ export function ModerationPage() {
     <section className="page">
       <header className="page-header">
         <h1>Модерация</h1>
-        <p className="muted">Жалобы, решения, апелляции</p>
+        <p className="muted">Жалобы, блокировки, апелляции</p>
       </header>
       {error && <div className="alert">{error}</div>}
       {message && <div className="success">{message}</div>}
@@ -69,11 +69,11 @@ export function ModerationPage() {
             </select>
           </label>
           <label>
-            Target ID
+            Цель ID
             <input value={decision.targetId} onChange={(e) => setDecision({ ...decision, targetId: e.target.value })} />
           </label>
           <label>
-            Action
+            Действие
             <input value={decision.action} onChange={(e) => setDecision({ ...decision, action: e.target.value })} />
           </label>
           <label>
@@ -81,7 +81,7 @@ export function ModerationPage() {
             <textarea value={decision.reason} onChange={(e) => setDecision({ ...decision, reason: e.target.value })} />
           </label>
           <label>
-            Blocked Until (ISO)
+            Блокировка до (ISO)
             <input value={decision.blockedUntil} onChange={(e) => setDecision({ ...decision, blockedUntil: e.target.value })} />
           </label>
           <button className="btn ghost" onClick={() => submit(createDecision, decision)}>
@@ -93,7 +93,7 @@ export function ModerationPage() {
         <div className="panel">
           <h2>Апелляция</h2>
           <label>
-            Block ID
+            Блокировка ID
             <input value={appeal.blockId} onChange={(e) => setAppeal({ ...appeal, blockId: e.target.value })} />
           </label>
           <label>
@@ -111,18 +111,18 @@ export function ModerationPage() {
         <div className="panel">
           <h2>Решение по апелляции</h2>
           <label>
-            Appeal ID
+            Апелляция ID
             <input value={appealDecision.id} onChange={(e) => setAppealDecision({ ...appealDecision, id: e.target.value })} />
           </label>
           <label>
-            Approved
+            Одобрено
             <select value={String(appealDecision.approved)} onChange={(e) => setAppealDecision({ ...appealDecision, approved: e.target.value === 'true' })}>
               <option value="true">true</option>
               <option value="false">false</option>
             </select>
           </label>
           <button className="btn ghost" onClick={() => submit((payload) => decideAppeal(payload.id, payload.approved), appealDecision)}>
-            Обработать
+            Применить
           </button>
         </div>
       </div>

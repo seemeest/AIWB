@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getProduct, getSimilarProducts } from '../api/products'
 import { useCart } from '../state/CartContext'
@@ -20,7 +20,7 @@ export function ProductPage() {
         const similarData = await getSimilarProducts(id, 8)
         setSimilar(similarData.items || [])
       } catch (err) {
-        setError(err?.response?.data?.message || 'Ошибка загрузки')
+        setError(err?.response?.data?.message || 'Ошибка загрузки товара')
       }
     }
     load()

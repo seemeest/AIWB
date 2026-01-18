@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { createOrder } from '../api/orders'
 import { useCart } from '../state/CartContext'
 import { useAuth } from '../auth/AuthContext'
@@ -16,7 +16,7 @@ export function CartPage() {
     try {
       const buyerId = auth?.user?.userId
       if (!buyerId) {
-        throw new Error('Нет пользователя')
+        throw new Error('Войдите в аккаунт')
       }
       const payload = {
         buyerId,
@@ -31,7 +31,7 @@ export function CartPage() {
       setResult(order)
       cart.clear()
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Ошибка оформления')
+      setError(err?.response?.data?.message || err.message || 'Ошибка оформления заказа')
     }
   }
 
@@ -39,7 +39,7 @@ export function CartPage() {
     <section className="page">
       <header className="page-header">
         <h1>Корзина</h1>
-        <p className="muted">Готовы оформить заказ?</p>
+        <p className="muted">Проверьте товары перед оформлением</p>
       </header>
       {error && <div className="alert">{error}</div>}
       {cart.items.length === 0 && <div className="muted">Корзина пуста</div>}
@@ -48,7 +48,7 @@ export function CartPage() {
           <div key={`${item.productId}-${idx}`} className="list-row">
             <div>
               <strong>{item.title || item.productId}</strong>
-              <div className="muted">Кол-во: {item.quantity}</div>
+              <div className="muted">Количество: {item.quantity}</div>
             </div>
             <div className="list-row-right">
               <span>{item.price} ₽</span>

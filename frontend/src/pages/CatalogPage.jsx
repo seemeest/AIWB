@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { searchProducts } from '../api/search'
 
@@ -31,16 +31,16 @@ export function CatalogPage() {
       <header className="page-header">
         <div>
           <h1>Каталог</h1>
-          <p className="muted">Поиск с опечатками и быстрые подсказки</p>
+          <p className="muted">Поиск товаров, брендов и категорий</p>
         </div>
         <div className="search-row">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Введите запрос"
+            placeholder="Поиск товаров"
           />
           <button className="btn primary" onClick={runSearch} disabled={loading}>
-            {loading ? 'Ищем...' : 'Найти'}
+            {loading ? 'Поиск...' : 'Найти'}
           </button>
         </div>
       </header>
